@@ -11,20 +11,23 @@ const center = {
   lng: 78.9629,
 };
 
-const GOOGLE_MAPS_API_KEY = "YOUR_GOOGLE_MAPS_API_KEY"; // Replace this with your key
+// Use environment variable for API key
+const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
 const GoogleMapsComponent = () => {
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: GOOGLE_MAPS_API_KEY,
   });
 
-  const [selectedLocation, setSelectedLocation] = useState(null);
+  const [selectedLocation, setSelectedLocation] = useState<{ lat: number; lng: number } | null>(null);
 
-  const handleMapClick = (event) => {
-    setSelectedLocation({
-      lat: event.latLng.lat(),
-      lng: event.latLng.lng(),
-    });
+  const handleMapClick = (event: google.maps.MapMouseEvent) => {
+    if (event.latLng) {
+      setSelectedLocation({
+        lat: event.latLng.lat(),
+        lng: event.latLng.lng(),
+      });
+    }
   };
 
   if (!isLoaded) return <p>Loading Map...</p>;
